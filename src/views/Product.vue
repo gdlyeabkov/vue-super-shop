@@ -1,0 +1,78 @@
+﻿<template>
+  <div class="home">
+    <Header :auth="true" :useremail="$route.query.useremail" />
+    <div class="card" style="width: 18rem;">
+      <div class="card-title">
+        <h5 class="card-header bg-warning">
+          {{ product.name }}
+        </h5>
+      </div>
+      <div class="card-body" :v-if="product.length">
+        <p class="card-text">{{ product.price }}$</p>
+        <router-link :to="`/users/bucket/add/${product.id}`" class="btn btn-danger">Добавить в корзину</router-link>
+      </div>
+    </div>
+  </div>
+  <Footer/>
+</template>
+
+<script>
+
+import Header from '@/components/Header.vue'
+import Footer from '@/components/Footer.vue'
+
+export default {
+  name: 'Product',
+  data(){
+    return{
+      product: {},
+      isAuth: window.localStorage.getItem('auth') == 'true'
+    }
+  },
+  async mounted(){
+    console.log(this.$route.params.productID)
+    fetch(`https://vuesupershop.herokuapp.com/product/${this.$route.params.productID}`, {
+      mode: 'cors',
+      method: 'GET'
+    }).then(response => response.body).then(rb  => {
+        const reader = rb.getReader()
+        return new ReadableStream({
+          start(controller) {
+            function push() {
+              reader.read().then( ({done, value}) => {
+                if (done) {
+                  console.log('done', done);
+                  controller.close();
+                  return;
+                }
+                controller.enqueue(value);
+                console.log(done, value);
+                push();
+              })
+            }
+            push();
+          }
+        });
+    }).then(stream => {
+        return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+      })
+      .then(result => {
+        console.log(result);
+        this.product = JSON.parse(result)
+      });
+  },
+  components: {
+    Header,
+    Footer
+  }
+}
+</script>
+<style scoped>
+  .card {
+    margin: 10px auto;
+    text-align: center;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+</style>
