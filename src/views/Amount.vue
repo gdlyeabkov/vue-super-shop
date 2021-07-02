@@ -2,6 +2,7 @@
   <Header :useremail="useremail" :auth="true" />
   <div class="main">
     <div class="form-control">
+      <p style="text-align: center;">У вас сейчас {{ moneys }} $</p>
       <input class="myamount" v-model="myamount" type="text">
     
       <a @click="addAmount" class="form-control btn btn-danger">
@@ -23,14 +24,47 @@ export default {
   data(){
     return {
       myamount: 0,
+      moneys: 0,
       useremail: window.localStorage.getItem('auth') == 'true' ? window.localStorage.getItem('useremail') : "",
       isAuth: window.localStorage.getItem('auth') == 'true'
     }
   },
+  mounted(){
+    fetch(`http://localhost:4000/users/amount?useremail=${this.useremail}&amount=0`, {
+          mode: 'cors',
+          method: 'GET'
+        }).then(response => response.body).then(rb  => {
+          const reader = rb.getReader()
+          return new ReadableStream({
+            start(controller) {
+              function push() {
+                reader.read().then( ({done, value}) => {
+                  if (done) {
+                    console.log('done', done);
+                    controller.close();
+                    return;
+                  }
+                  controller.enqueue(value);
+                  console.log(done, value);
+                  push();
+                })
+              }
+              push();
+            }
+          });
+      }).then(stream => {
+          return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+        })
+        .then(result => {
+          console.log(JSON.parse(result))
+          if(JSON.parse(result).status.includes("OK")){
+            this.moneys = JSON.parse(result).moneys  
+          }
+        });
+  },
   methods:{
     async addAmount(){
-      localStorage.setItem("userlogin", "true")
-      await fetch(`https://vuesupershop.herokuapp.com/users/amount?useremail=${this.useremail}&amount=${this.myamount}`, {
+      await fetch(`http://localhost:4000/users/amount?useremail=${this.useremail}&amount=${this.myamount}`, {
           mode: 'cors',
           method: 'GET'
         }).then(response => response.body).then(rb  => {
@@ -57,9 +91,8 @@ export default {
         })
         .then(result => {
           console.log(JSON.parse(result));
-          if(JSON.parse(result.includes("OK"))){
+          if(JSON.parse(result).status.includes("OK")){
             this.$router.push({ name: "Home" })
-
           }
         });
     }

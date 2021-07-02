@@ -1,4 +1,7 @@
-﻿const mongoose = require('mongoose')
+﻿const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
+const mongoose = require('mongoose')
 const express = require('express')
 const path = require('path')
 const serveStatic = require('serve-static')
@@ -402,7 +405,7 @@ app.get('/users/bucket/buy',async (req, res)=>{
 
 })
 
-app.get('/users/amount',async (req, res)=>{
+app.get('/users/amount',(req, res)=>{
     
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -410,20 +413,25 @@ app.get('/users/amount',async (req, res)=>{
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
    
 
-    let query = await UsersModel.findOne({'email': req.query.useremail }, async function(err, user){
+    let query = UsersModel.findOne({'email': req.query.useremail }, function(err, user){
         if (err || Array(req.query.useremail)[0] === undefined){
             //// res.render('amount', { user, useremail: req.query.useremail })
         } else {
             if(user != null && user != undefined){
                 let incerementAmountBy = req.query.amount
-                await UsersModel.updateOne({ email: req.query.useremail }, 
+                UsersModel.updateOne({ email: req.query.useremail }, 
                 { 
                     "$inc": { "moneys": incerementAmountBy }
+                }, (err, customUser) => {
+                    if(err){
+                        return res.json({ "status": "Error"})
+                    }
+                    return res.json({ "status": "OK", "moneys": user.moneys })
                 })
-                res.json({ "status": "OK" })
+                
                 // res.render('amount', { user, useremail: req.query.useremail }) 
             } else {
-                res.json({ "status": "Error" })
+                return res.json({ "status": "Error" })
                 // res.render('amount', { user, useremail: req.query.useremail })
             }
         }
@@ -453,7 +461,10 @@ app.get('/users/check', (req,res)=>{
             return res.send(`user not found`)    
             
         } else {
-            if(req.query.useremail == user.email && req.query.userpassword == user.password){
+            
+            let passwordCheck = bcrypt.compareSync(req.query.userpassword, user.password) && req.query.userpassword !== ''
+
+            if(req.query.useremail == user.email && passwordCheck){
                 auth = true
                 res.json(user)
                 //res.redirect(`/?useremail=${user.email}&error=no`)
@@ -518,7 +529,13 @@ app.get('/users/usercreatesuccess',async (req, res)=>{
             console.log('rollback')
             return res.send('rollback')
         } else {
-            const user = await new UsersModel({ email: req.query.useremail, password:req.query.userpassword, name:req.query.username, age:req.query.userage });
+
+            let encodedPassword = "#"
+            const salt = bcrypt.genSalt(saltRounds)
+            encodedPassword = bcrypt.hashSync(req.query.userpassword, saltRounds)
+
+
+            const user = await new UsersModel({ email: req.query.useremail, password: encodedPassword, name:req.query.username, age:req.query.userage });
             user.save(function (err) {
                 if(err){
                     console.log('rollback')
