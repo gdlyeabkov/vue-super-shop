@@ -1,18 +1,18 @@
 <template>
   <div class="pos-f-t">
-    <div class="customcollapsepanel collapse" id="navbarToggleExternalContent">
+    <div ref="customcollapsepanel" class="customcollapsepanel collapse" id="navbarToggleExternalContent">
       <div class="customcollapse bg-dark p-4">
         <div v-if="!auth">
           <ul class="navbar-nav">
             <div>
               <li class="nav-item">
-                <router-link style="color:white; float: right;" class="nav-item text-white" :to="{name:'UsersLogin'}">
+                <router-link style="color: red; float: right;" class="nav-item" :to="{name:'UsersLogin'}">
                   Вход
                 </router-link>
               </li>
               <br style="clear: both;"/> 
               <li class="nav-item">
-                <router-link  style="float: right;" class="nav-item text-white" :to="{name:'UsersRegistry'}">
+                <router-link  style="color: red; float: right;" class="nav-item" :to="{name:'UsersRegistry'}">
                   Регистрация
                 </router-link>
               </li>
@@ -40,7 +40,7 @@
           </li>
           <li>
             <span class="badge bg-danger">
-              <router-link style="color:white;" :to="{ name: 'Amount', query: { useremail: useremail, amount: 0 }}">+</router-link>
+              <router-link style="color: white; text-decoration: none;" :to="{ name: 'Amount', query: { useremail: useremail, amount: 0 }}">+</router-link>
             </span>
           </li>
           <li class="nav-item">
@@ -60,25 +60,40 @@
       </div>
     </div>
     <nav class="navbar navbar-dark bg-dark">
-      <button @click="burgerVisible = !burgerVisible" class="customburger navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+      <button @click="toggleSidebar()" class="customburger navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
         <a class="navbar-brand" href="#">VueSuperShop</a>
         <ul class="navbar-nav">
-          <div v-if="auth && !burgerVisible">
-            <li class="nav-item">
-              <router-link :to="{name:'Home'}" style="color: red;" >
-                Главная
-              </router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-item" :to="{name:'Bucket', query:{ 'useremail': useremail }}" style="color: red;">
-                  Корзина
-              </router-link>
-            </li>
-            <li>
-                <span class="badge bg-danger">{{ useremail }}</span>
-            </li>
+          <div v-if="!burgerVisible">
+            <div v-if="!auth">
+              <li class="nav-item">
+                <router-link style="color: red; float: right;" class="nav-item" :to="{name:'UsersLogin'}">
+                  Вход
+                </router-link>
+              </li>
+              <br style="clear: both;"/> 
+              <li class="nav-item">
+                <router-link  style="color: red; float: right;" class="nav-item" :to="{name:'UsersRegistry'}">
+                  Регистрация
+                </router-link>
+              </li>
+            </div>
+            <div v-else-if="auth">
+              <li class="nav-item">
+                <router-link :to="{name:'Home'}" style="color: red;" >
+                  Главная
+                </router-link>
+              </li>
+              <li class="nav-item">
+                <router-link class="nav-item" :to="{name:'Bucket', query:{ 'useremail': useremail }}" style="color: red;">
+                    Корзина
+                </router-link>
+              </li>
+              <li>
+                  <span class="badge bg-danger">{{ useremail }}</span>
+              </li>
+            </div>
           </div>
         </ul>
     </nav>
@@ -94,6 +109,14 @@ export default {
     }
   },
   methods: {
+    toggleSidebar(){
+      this.burgerVisible = !this.burgerVisible
+      if(this.burgerVisible){
+        this.$refs.customcollapsepanel.style = "display: block;"
+      } else if(!this.burgerVisible){
+        this.$refs.customcollapsepanel.style = "display: none;"
+      }
+    },
     logoutUser(){
       // window.localStorage.clear()
       // location.reload()

@@ -2,7 +2,7 @@
   <Header :useremail="useremail" :auth="true" />
   <div class="main">
     <div class="form-control">
-      <p style="text-align: center;">У вас сейчас {{ moneys }} $</p>
+      <p style="text-align: center;">У вас сейчас на счёте <b>{{ moneys }}$</b></p>
       <input class="myamount" v-model="myamount" type="text">
     
       <a @click="addAmount" class="form-control btn btn-danger">

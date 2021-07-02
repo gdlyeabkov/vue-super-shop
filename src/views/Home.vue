@@ -125,11 +125,16 @@ export default {
     text-align: center;
    
   }
-  
+  .card > .card-header {
+    max-height: 65px;
+    overflow: hidden;
+  }
   .card {
     display: block;
     float: left;
     margin: 10px 5px;
+    max-width: 200px;
+    max-height: 195px;
   }
   
   .customCardGroup .card {
