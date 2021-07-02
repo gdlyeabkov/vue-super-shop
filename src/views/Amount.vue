@@ -30,7 +30,7 @@ export default {
     }
   },
   mounted(){
-    fetch(`http://localhost:4000/users/amount?useremail=${this.useremail}&amount=0`, {
+    fetch(`https://vuesupershop.herokuapp.com/users/amount?useremail=${this.useremail}&amount=0`, {
           mode: 'cors',
           method: 'GET'
         }).then(response => response.body).then(rb  => {
@@ -64,7 +64,7 @@ export default {
   },
   methods:{
     async addAmount(){
-      await fetch(`http://localhost:4000/users/amount?useremail=${this.useremail}&amount=${this.myamount}`, {
+      await fetch(`https://vuesupershop.herokuapp.com/users/amount?useremail=${this.useremail}&amount=${this.myamount}`, {
           mode: 'cors',
           method: 'GET'
         }).then(response => response.body).then(rb  => {
