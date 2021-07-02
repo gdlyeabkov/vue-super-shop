@@ -16,10 +16,10 @@ export default {
   /* p {
     clear: both;
   } */
-  /* .customfooter {
-    position: absolute;
-    top: 650px;
+  .customfooter {
+    position: relative;
+    top: 400px;
     left: 0px;
     width: 100%;
-  } */
+  }
 </style>

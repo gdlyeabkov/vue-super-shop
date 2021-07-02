@@ -9,7 +9,8 @@
       </div>
       <div class="card-body" :v-if="product.length">
         <p class="card-text">{{ product.price }}$</p>
-        <router-link :to="`/users/bucket/add/${product.id}`" class="btn btn-danger">Добавить в корзину</router-link>
+        <!-- <router-link :to="`/users/bucket/add/${product.id}`" class="btn btn-danger">Добавить в корзину</router-link> -->
+        <a @click="addToBucket()" class="btn btn-danger">Добавить в корзину</a>
       </div>
     </div>
   </div>
@@ -27,6 +28,40 @@ export default {
     return{
       product: {},
       isAuth: window.localStorage.getItem('auth') == 'true'
+    }
+  },
+  methods: {
+    addToBucket(){
+      fetch(`https://vuesupershop.herokuapp.com/users/bucket/add?useremail=${this.$route.query.useremail}&productname=${this.product.name}&productprice=${this.product.price}`, {
+      mode: 'cors',
+      method: 'GET'
+    }).then(response => response.body).then(rb  => {
+        const reader = rb.getReader()
+        return new ReadableStream({
+          start(controller) {
+            function push() {
+              reader.read().then( ({done, value}) => {
+                if (done) {
+                  console.log('done', done);
+                  controller.close();
+                  return;
+                }
+                controller.enqueue(value);
+                console.log(done, value);
+                push();
+              })
+            }
+            push();
+          }
+        });
+    }).then(stream => {
+        return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+      })
+      .then(async result => {
+        if(JSON.parse(result).status.includes("OK")){
+          this.$router.push({ name: 'Bucket', query: { useremail: this.$route.query.useremail } })  
+        }
+      });
     }
   },
   async mounted(){

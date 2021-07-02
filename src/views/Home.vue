@@ -12,7 +12,7 @@
         <a v-if="isAuth" @click="addToBucket(product)" class="btn btn-danger">Добавить в корзину</a>
       </div> 
     </div>
-    <div v-else-if="allProducts.length <= 0">
+    <div v-else-if="allProducts.length <= 0" style="color: white; font-weight: bold;">
       Список товаров пуст
     </div>
   </div>

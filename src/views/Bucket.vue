@@ -145,8 +145,10 @@ export default {
         // window.location.reload()
         // this.$router.push({ name: "Home"})
         // this.$router.push('/')
-        window.location.reload()
         
+        // window.location.reload()
+        this.$router.push({ name: "Home"})
+
         // console.log(JSON.parse(result))
         // setTimeout(() => {
         //   location = '/'

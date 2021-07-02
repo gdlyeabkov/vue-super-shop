@@ -6,12 +6,13 @@
           <ul class="navbar-nav">
             <div>
               <li class="nav-item">
-                <router-link style="color:white;" class="nav-item text-white" :to="{name:'UsersLogin'}">
+                <router-link style="color:white; float: right;" class="nav-item text-white" :to="{name:'UsersLogin'}">
                   Вход
                 </router-link>
               </li>
+              <br style="clear: both;"/> 
               <li class="nav-item">
-                <router-link class="nav-item text-white" :to="{name:'UsersRegistry'}">
+                <router-link  style="float: right;" class="nav-item text-white" :to="{name:'UsersRegistry'}">
                   Регистрация
                 </router-link>
               </li>
