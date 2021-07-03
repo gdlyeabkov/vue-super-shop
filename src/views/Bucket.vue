@@ -15,9 +15,12 @@
             <button @click="deleteFromBucket(product.name)"  class="btn btn-danger">удалить из корзины</button>
           </div>
         </div>
-        <a style="font-size: 22px;" @click="addOrder()" class="order form-control btn btn-success">
+        <button style="font-size: 22px;" @click="addOrder()" class="order form-control btn btn-success">
           Оформить заказ {{ priceForAllOrders }}$
-        </a>  
+        </button>
+        <p class="customErros">
+          {{ errors }}
+        </p>
       </div>
       <div  v-else > 
         <router-link :to="{ name: 'Home'}" class="form-control btn btn-danger">
@@ -41,7 +44,8 @@ export default {
       useremail: window.localStorage.getItem('auth') == 'true' ? window.localStorage.getItem('useremail') : "",
       allProductsInBucketOfThisUser: {},
       isAuth: window.localStorage.getItem('auth') == 'true',
-      priceForAllOrders: 0
+      priceForAllOrders: 0,
+      errors: ''
     }
   },
   async mounted(){
@@ -112,7 +116,16 @@ export default {
         return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
       })
       .then(result => {
-        location.reload()
+        // location.reload()
+        if(JSON.parse(result).status.includes("OK")){
+          this.$router.push({ name: 'Amount', query: { 'useremail': this.$route.query.useremail, 'amount': 0 } })
+        } else if(JSON.parse(result).status.includes("Error")){
+          this.errors = 'У вас не хватает денег!!!'
+
+          setTimeout(() => {
+            this.errors = ''
+          }, 5000)
+        }
       });
     },
     deleteFromBucket(productName) {
@@ -148,7 +161,7 @@ export default {
         
         // window.location.reload()
         this.$router.push({ name: "Home"})
-
+&& !this.age.toString()[this.age.toString().length - 1].includes('3')
         // console.log(JSON.parse(result))
         // setTimeout(() => {
         //   location = '/'
@@ -180,5 +193,9 @@ export default {
   .order {
     width: 25%;
     margin: auto;
+  }
+  .customErros {
+    color: red;
+    font-weight: bolder;
   }
 </style>

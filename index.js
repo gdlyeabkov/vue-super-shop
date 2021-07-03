@@ -394,10 +394,12 @@ app.get('/users/bucket/buy',async (req, res)=>{
                 } else if(user.moneys < commonPrice){
                     // res.render('ordersuccess', { success: false, auth: true, user: user.name })
                     console.log('нехватает денег')
+                    res.json({ "status": "Error" })
                 }
              } else {
                 // res.render('ordersuccess', { success: false, auth: true, user: user.name })
                 console.log('a')
+                res.json({ "status": "OK" })
             }
         }
     })
