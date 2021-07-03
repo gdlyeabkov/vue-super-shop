@@ -3,7 +3,7 @@
     <Header/>
     <div class="customCardGroup">
       <img class="mb-4" src="https://cdn4.iconfinder.com/data/icons/logos-brands-5/24/vue-dot-js-256.png" alt="" width="72" height="72">
-      <h1 class="h3 mb-3 font-weight-normal headerform">Зарегестрируйтесь</h1>
+      <h1 class="h3 mb-3 font-weight-normal headerform">Зарегистрируйтесь</h1>
       
       <!-- <label class="sr-only">Email</label> -->
       <input v-model="useremail" type="email" id="" class="useremail form-control" placeholder="Email address" required="" autofocus="">
@@ -15,7 +15,7 @@
       <input v-model="username" type="text" id="" class="username form-control" placeholder="Name" required="" autofocus="">
       <div class="checkbox mb-3">
       </div>
-      <button @click="registerNewUser" class="btn btn-lg btn-danger btn-block registerBtn">Зарегестрироваться</button>
+      <button @click="registerNewUser" class="btn btn-lg btn-danger btn-block registerBtn">Зарегистрироваться</button>
       <div class="customErros">{{ errors }}</div>
     </div>
   </div>
