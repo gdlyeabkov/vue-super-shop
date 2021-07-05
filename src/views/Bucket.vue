@@ -41,9 +41,9 @@ export default {
   name: 'Bucket',
   data(){
     return{
-      useremail: window.localStorage.getItem('auth') == 'true' ? window.localStorage.getItem('useremail') : "",
+      // useremail: window.localStorage.getItem('auth') == 'true' ? window.localStorage.getItem('useremail') : "",
       allProductsInBucketOfThisUser: {},
-      isAuth: window.localStorage.getItem('auth') == 'true',
+      // isAuth: window.localStorage.getItem('auth') == 'true',
       priceForAllOrders: 0,
       errors: ''
     }
@@ -76,12 +76,17 @@ export default {
         return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
       })
       .then(result => {
-        console.log(JSON.parse(result));
-        this.allProductsInBucketOfThisUser = JSON.parse(result)
-        this.allProductsInBucketOfThisUser.map(product => {
-          this.priceForAllOrders += product.price
+          if(JSON.parse(result).message.includes("success")){
+            console.log(JSON.parse(result));
+            this.allProductsInBucketOfThisUser = JSON.parse(result).productsInBucket
+            this.allProductsInBucketOfThisUser.map(product => {
+            this.priceForAllOrders += product.price
         })
-      });
+          } else if(JSON.parse(result).message.includes("Failed")){
+            this.$router.push({ name: "UsersLogin" })
+          }
+        
+      })
   },
   methods:{
     goToPage(page){
@@ -116,15 +121,19 @@ export default {
         return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
       })
       .then(result => {
-        // location.reload()
-        if(JSON.parse(result).status.includes("OK")){
-          this.$router.push({ name: 'Amount', query: { 'useremail': this.$route.query.useremail, 'amount': 0 } })
-        } else if(JSON.parse(result).status.includes("Error")){
-          this.errors = 'У вас не хватает денег!!!'
+        if(JSON.parse(result).message.includes("success")){
+          // location.reload()
+          if(JSON.parse(result).status.includes("OK")){
+            this.$router.push({ name: 'Amount', query: { 'useremail': this.$route.query.useremail, 'amount': 0 } })
+          } else if(JSON.parse(result).status.includes("Error")){
+            this.errors = 'У вас не хватает денег!!!'
 
-          setTimeout(() => {
-            this.errors = ''
-          }, 5000)
+            setTimeout(() => {
+              this.errors = ''
+            }, 5000)
+          }
+        } else if(JSON.parse(result).message.includes("success")){
+          this.$router.push({ name: "UsersLogin" })
         }
       });
     },
@@ -155,17 +164,20 @@ export default {
         return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
       })
       .then(result => {
-        // window.location.reload()
-        // this.$router.push({ name: "Home"})
-        // this.$router.push('/')
-        
-        // window.location.reload()
-        this.$router.push({ name: "Home"})
-&& !this.age.toString()[this.age.toString().length - 1].includes('3')
-        // console.log(JSON.parse(result))
-        // setTimeout(() => {
-        //   location = '/'
-        // }, 2000)
+        if(JSON.parse(result).message.includes("success")){
+          // window.location.reload()
+          // this.$router.push({ name: "Home"})
+          // this.$router.push('/')
+          
+          // window.location.reload()
+          this.$router.push({ name: "Home"})
+          // console.log(JSON.parse(result))
+          // setTimeout(() => {
+          //   location = '/'
+          // }, 2000)
+        } else if(JSON.parse(result).message.includes("Failed")){
+          this.$router.push({ name: "UsersLogin" })
+        }
       });
       
     }

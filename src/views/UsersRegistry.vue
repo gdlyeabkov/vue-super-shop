@@ -35,7 +35,7 @@ export default {
       userpassword: '',
       userage: 0,
       username: '',
-      isAuth: window.localStorage.getItem('auth') == 'true',
+      // isAuth: window.localStorage.getItem('auth') == 'true',
       errors: ""
 
     }
@@ -73,7 +73,7 @@ export default {
           if(result.includes("created")){
             window.localStorage.setItem("auth", "true");
             window.localStorage.setItem("useremail", this.useremail);
-            this.$router.push('/users/usercreatesuccess')  
+            this.$router.push({ name: "UsersLogin", query: { "useremail": this.useremail } })  
           } else if(result.includes("rollback")){
             this.errors = "Такой пользователь уже существует!!!"
           }

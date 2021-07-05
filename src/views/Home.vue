@@ -9,7 +9,7 @@
       </h5>
       <div class="card-body">
         <h5 class="card-title">{{ product.price }}$</h5>
-        <a v-if="isAuth" @click="addToBucket(product)" class="btn btn-danger">Добавить в корзину</a>
+        <a @click="addToBucket(product)" class="btn btn-danger">Добавить в корзину</a>
       </div> 
     </div>
     <div v-else-if="allProducts.length <= 0" style="color: white; font-weight: bold;">
@@ -25,13 +25,16 @@
 import Header from '@/components/Header.vue' 
 import Footer from '@/components/Footer.vue'
 
+import * as jwt from 'jsonwebtoken' 
+
 export default {
   name: 'Home',
   data(){
     return{
       allProducts: [],
-      isAuth: window.localStorage.getItem('auth') == 'true',
-      useremail: window.localStorage.getItem('auth') == 'true' ? window.localStorage.getItem('useremail') : ""
+      // isAuth: window.localStorage.getItem('auth') == 'true',
+      useremail:''
+      // useremail: window.localStorage.getItem('auth') == 'true' ? window.localStorage.getItem('useremail') : ""
     }
   },
   methods:{
@@ -62,17 +65,24 @@ export default {
         return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
       })
       .then(async result => {
-        console.log(JSON.parse(result))
-        if(JSON.parse(result).status.includes("OK")){
-          this.$router.push({ name: 'Bucket', query: { useremail: this.useremail } })  
+        if(JSON.parse(result).message.includes("success")){
+          console.log(JSON.parse(result))
+          if(JSON.parse(result).status.includes("OK")){
+            this.$router.push({ name: 'Bucket', query: { useremail: this.useremail } })  
+          }
+        } else if(JSON.parse(result).message.includes("Failed")){
+          this.$router.push({ name: "UsersLogin" })
         }
-      });
+      })
     },
     toAmount(){
       
     },
   },
   async mounted(){
+    
+    // const verification = jwt.verify(window.localStorage.getItem('vuesupershoptoken'), 'APP_SECRET')
+    // console.log("verification:", verification)
     
     fetch('https://vuesupershop.herokuapp.com/home', {
       mode: 'cors',
@@ -101,11 +111,19 @@ export default {
       })
       .then(result => {
         console.log(JSON.parse(result));
-        if(window.localStorage.getItem('auth') === null || window.localStorage.getItem('auth') === false){
-          this.$router.push({ name: 'UsersLogin' })
+        
+        // if(window.localStorage.getItem('auth') === null || window.localStorage.getItem('auth') === false){
+        //   this.$router.push({ name: 'UsersLogin' })
+        // }
+        
+        if(JSON.parse(result).message.includes("success")){
+          // console.log(window.localStorage.getItem('auth'))
+          this.allProducts = JSON.parse(result).allProducts
+          this.useremail = JSON.parse(result).useremail
+        } else if(JSON.parse(result).message.includes("Failed")) {
+          console.log('редирект')
+          this.$router.push({ name: "UsersLogin" })
         }
-        console.log(window.localStorage.getItem('auth'))
-        this.allProducts = JSON.parse(result)
       });
   },
   components: {

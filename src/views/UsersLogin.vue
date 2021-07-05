@@ -59,14 +59,16 @@ export default {
           return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
         })
         .then(result => {
-          console.log(result);
-          if(!result.includes("user not found")){
-            // console.log(JSON.parse(result))
+          console.log(JSON.parse(result))
+          if(JSON.parse(result).status.includes("OK")){
+            
             //window.localStorage.setItem("userlogin", "true")
+            window.localStorage.setItem("vuesupershoptoken", JSON.parse(result).token)
             window.localStorage.setItem("auth", "true");
-            window.localStorage.setItem("useremail", this.useremail);
-            this.$router.push('/')
-          } else if(result.includes("user not found")){
+            // window.localStorage.setItem("useremail", this.useremail);
+            
+            this.$router.push({ name: "Home" })
+          } else if(JSON.parse(result).status.includes("Error")){
             this.errors = "Такого пользователя не существует!!!"
           }
         });

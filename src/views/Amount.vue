@@ -9,7 +9,6 @@
           Пополнить счёт
       </a>
     </div>
-    <!-- footer -->
     <Footer/>
   </div>
 </template>
@@ -25,12 +24,12 @@ export default {
     return {
       myamount: 0,
       moneys: 0,
-      useremail: window.localStorage.getItem('auth') == 'true' ? window.localStorage.getItem('useremail') : "",
-      isAuth: window.localStorage.getItem('auth') == 'true'
+      // useremail: window.localStorage.getItem('auth') == 'true' ? window.localStorage.getItem('useremail') : "",
+      // isAuth: window.localStorage.getItem('auth') == 'true'
     }
   },
   mounted(){
-    fetch(`https://vuesupershop.herokuapp.com/users/amount?useremail=${this.useremail}&amount=0`, {
+    fetch(`https://vuesupershop.herokuapp.com/users/amount?useremail=${this.$route.query.useremail}&amount=0`, {
           mode: 'cors',
           method: 'GET'
         }).then(response => response.body).then(rb  => {
@@ -57,8 +56,13 @@ export default {
         })
         .then(result => {
           console.log(JSON.parse(result))
-          if(JSON.parse(result).status.includes("OK")){
-            this.moneys = JSON.parse(result).moneys  
+          if(JSON.parse(result).message.includes("success")){
+            if(JSON.parse(result).status.includes("OK")){
+              this.moneys = JSON.parse(result).moneys
+              this.useremail = JSON.parse(result).useremail
+            }
+          } else if(JSON.parse(result).message.includes("Failed")){
+            this.$router.push({ name: "UsersLogin" })
           }
         });
   },

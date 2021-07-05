@@ -27,7 +27,7 @@ export default {
   data(){
     return{
       product: {},
-      isAuth: window.localStorage.getItem('auth') == 'true'
+      // isAuth: window.localStorage.getItem('auth') == 'true'
     }
   },
   methods: {
@@ -58,8 +58,12 @@ export default {
         return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
       })
       .then(async result => {
-        if(JSON.parse(result).status.includes("OK")){
-          this.$router.push({ name: 'Bucket', query: { useremail: this.$route.query.useremail } })  
+        if(JSON.parse(result).message.includes("success")){
+          if(JSON.parse(result).status.includes("OK")){
+            this.$router.push({ name: 'Bucket', query: { useremail: this.$route.query.useremail } })  
+          }
+        } else if(JSON.parse(result).message.includes("Failed")){
+          this.$router.push({ name: "UsersLogin" })
         }
       });
     }
@@ -93,7 +97,11 @@ export default {
       })
       .then(result => {
         console.log(result);
-        this.product = JSON.parse(result)
+        if(JSON.parse(result).message.includes("success")){
+          this.product = JSON.parse(result).product
+        } else if(JSON.parse(result).message.includes("Failed")){
+          this.$router.push({ name: "UsersLogin" })
+        }
       });
   },
   components: {

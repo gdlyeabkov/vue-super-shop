@@ -118,9 +118,40 @@ export default {
       }
     },
     logoutUser(){
-      // window.localStorage.clear()
-      // location.reload()
-      this.$router.push({ name: "UsersLogin" })
+      fetch(`http://localhost:4000/cleartoken`, {
+      mode: 'cors',
+      method: 'GET'
+    }).then(response => response.body).then(rb  => {
+        const reader = rb.getReader()
+        return new ReadableStream({
+          start(controller) {
+            function push() {
+              reader.read().then( ({done, value}) => {
+                if (done) {
+                  console.log('done', done);
+                  controller.close();
+                  return;
+                }
+                controller.enqueue(value);
+                console.log(done, value);
+                push();
+              })
+            }
+            push();
+          }
+        });
+    }).then(stream => {
+        return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+      })
+      .then(async result => {
+        console.log(JSON.parse(result))
+          
+        if(JSON.parse(result).status.includes("OK")){
+          window.localStorage.clear()
+          // location.reload()
+          this.$router.push({ name: "UsersLogin" })
+        }
+      })
     },
   },
   props: {
