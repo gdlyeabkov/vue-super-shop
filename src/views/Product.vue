@@ -22,11 +22,14 @@
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 
+import * as jwt from 'jsonwebtoken' 
+
 export default {
   name: 'Product',
   data(){
     return{
       product: {},
+      token: window.localStorage.getItem('vuesupershoptoken')
       // isAuth: window.localStorage.getItem('auth') == 'true'
     }
   },
@@ -58,13 +61,23 @@ export default {
         return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
       })
       .then(async result => {
-        if(JSON.parse(result).message.includes("success")){
-          if(JSON.parse(result).status.includes("OK")){
+        
+        // if(JSON.parse(result).message.includes("success")){
+        //   if(JSON.parse(result).status.includes("OK")){
+        //     this.$router.push({ name: 'Bucket', query: { useremail: this.$route.query.useremail } })  
+        //   }
+        // } else if(JSON.parse(result).message.includes("Failed")){
+        //   this.$router.push({ name: "UsersLogin" })
+        // }
+
+        jwt.verify(this.token, 'secret', (err, decoded) => {
+          if (err) {
+              this.$router.push({ name: "UsersLogin" })
+          } else {
             this.$router.push({ name: 'Bucket', query: { useremail: this.$route.query.useremail } })  
           }
-        } else if(JSON.parse(result).message.includes("Failed")){
-          this.$router.push({ name: "UsersLogin" })
-        }
+        })
+
       });
     }
   },
@@ -97,11 +110,20 @@ export default {
       })
       .then(result => {
         console.log(result);
-        if(JSON.parse(result).message.includes("success")){
-          this.product = JSON.parse(result).product
-        } else if(JSON.parse(result).message.includes("Failed")){
-          this.$router.push({ name: "UsersLogin" })
-        }
+        // if(JSON.parse(result).message.includes("success")){
+        //   this.product = JSON.parse(result).product
+        // } else if(JSON.parse(result).message.includes("Failed")){
+        //   this.$router.push({ name: "UsersLogin" })
+        // }
+
+        jwt.verify(this.token, 'secret', (err, decoded) => {
+          if (err) {
+              this.$router.push({ name: "UsersLogin" })
+          } else {
+            this.product = JSON.parse(result).product
+          }
+        })
+
       });
   },
   components: {

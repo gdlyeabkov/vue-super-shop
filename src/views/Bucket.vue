@@ -37,6 +37,8 @@
 import Header from '@/components/Header.vue' 
 import Footer from '@/components/Footer.vue' 
 
+import * as jwt from 'jsonwebtoken' 
+
 export default {
   name: 'Bucket',
   data(){
@@ -45,7 +47,8 @@ export default {
       allProductsInBucketOfThisUser: {},
       // isAuth: window.localStorage.getItem('auth') == 'true',
       priceForAllOrders: 0,
-      errors: ''
+      errors: '',
+      token: window.localStorage.getItem('vuesupershoptoken')
     }
   },
   async mounted(){
@@ -76,16 +79,29 @@ export default {
         return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
       })
       .then(result => {
-          if(JSON.parse(result).message.includes("success")){
+          
+          // if(JSON.parse(result).message.includes("success")){
+          //   console.log(JSON.parse(result));
+          //   this.allProductsInBucketOfThisUser = JSON.parse(result).productsInBucket
+          //   this.allProductsInBucketOfThisUser.map(product => {
+          //       this.priceForAllOrders += product.price
+          //   })
+          // } else if(JSON.parse(result).message.includes("Failed")){
+          //   this.$router.push({ name: "UsersLogin" })
+          // }
+        
+        jwt.verify(this.token, 'secret', (err, decoded) => {
+          if (err) {
+            this.$router.push({ name: "UsersLogin" })
+          } else {
             console.log(JSON.parse(result));
             this.allProductsInBucketOfThisUser = JSON.parse(result).productsInBucket
             this.allProductsInBucketOfThisUser.map(product => {
-            this.priceForAllOrders += product.price
-        })
-          } else if(JSON.parse(result).message.includes("Failed")){
-            this.$router.push({ name: "UsersLogin" })
+                this.priceForAllOrders += product.price
+            })
           }
-        
+        })
+
       })
   },
   methods:{
@@ -121,21 +137,39 @@ export default {
         return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
       })
       .then(result => {
-        console.log(JSON.parse(result))
-        if(JSON.parse(result).message.includes("success")){
-          // location.reload()
-          if(JSON.parse(result).status.includes("OK")){
-            this.$router.push({ name: 'Amount', query: { 'useremail': this.$route.query.useremail, 'amount': 0 } })
-          } else if(JSON.parse(result).status.includes("Error")){
-            this.errors = 'У вас не хватает денег!!!'
+       
+        // console.log(JSON.parse(result))
+        // if(JSON.parse(result).message.includes("success")){
+        //   // location.reload()
+        //   if(JSON.parse(result).status.includes("OK")){
+        //     this.$router.push({ name: 'Amount', query: { 'useremail': this.$route.query.useremail, 'amount': 0 } })
+        //   } else if(JSON.parse(result).status.includes("Error")){
+        //     this.errors = 'У вас не хватает денег!!!'
 
-            setTimeout(() => {
-              this.errors = ''
-            }, 5000)
+        //     setTimeout(() => {
+        //       this.errors = ''
+        //     }, 5000)
+        //   }
+        // } else if(JSON.parse(result).message.includes("Failed")){
+        //   this.$router.push({ name: "UsersLogin" })
+        // }
+
+        jwt.verify(this.token, 'secret', (err, decoded) => {
+          if (err) {
+            this.$router.push({ name: "UsersLogin" })
+          } else {
+            if(JSON.parse(result).status.includes("OK")){
+              this.$router.push({ name: 'Amount', query: { 'useremail': this.$route.query.useremail, 'amount': 0 } })
+            } else if(JSON.parse(result).status.includes("Error")){
+              this.errors = 'У вас не хватает денег!!!'
+
+              setTimeout(() => {
+                this.errors = ''
+              }, 5000)
+            }
           }
-        } else if(JSON.parse(result).message.includes("Failed")){
-          this.$router.push({ name: "UsersLogin" })
-        }
+        })
+      
       });
     },
     deleteFromBucket(productName) {
@@ -165,20 +199,21 @@ export default {
         return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
       })
       .then(result => {
-        if(JSON.parse(result).message.includes("success")){
-          // window.location.reload()
+
+        // if(JSON.parse(result).message.includes("success")){
           // this.$router.push({ name: "Home"})
-          // this.$router.push('/')
-          
-          // window.location.reload()
-          this.$router.push({ name: "Home"})
-          // console.log(JSON.parse(result))
-          // setTimeout(() => {
-          //   location = '/'
-          // }, 2000)
-        } else if(JSON.parse(result).message.includes("Failed")){
-          this.$router.push({ name: "UsersLogin" })
-        }
+        // } else if(JSON.parse(result).message.includes("Failed")){
+        //   this.$router.push({ name: "UsersLogin" })
+        // }
+
+        jwt.verify(this.token, 'secret', (err, decoded) => {
+          if (err) {
+            this.$router.push({ name: "UsersLogin" })
+          } else {
+            this.$router.push({ name: "Home"})
+          }
+        })
+
       });
       
     }

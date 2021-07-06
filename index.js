@@ -98,10 +98,10 @@ app.get('/home', (req, res)=>{
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
     
     // let security = jwt.verify(token, 'shhhhh')
-    jwt.verify(token, 'secret', function(err, decoded) {
-        if (err) {
-            return res.json({ message: 'Failed to authenticate token.' });
-        } else {
+    // jwt.verify(token, 'secret', function(err, decoded) {
+        // if (err) {
+        //     return res.json({ message: 'Failed to authenticate token.' });
+        // } else {
             // if everything is good, save to request for use in other routes
             // req.decoded = decoded;
             // next();
@@ -112,17 +112,18 @@ app.get('/home', (req, res)=>{
                 }
                 if(Array(req.query.useremail)[0] === undefined){
                    console.log(allProducts)
-                    return res.json({ "allProducts": allProducts, "message": "success", "useremail": decoded.useremail })
+                    // return res.json({ "allProducts": allProducts, "message": "success", "useremail": decoded.useremail })
+                    return res.json({ "allProducts": allProducts, "message": "success" })
                 }
                 let mailOfUser = req.query.useremail
-                return res.json({ "allProducts": allProducts, "message": "success", "useremail": decoded.useremail })
+                // return res.json({ "allProducts": allProducts, "message": "success", "useremail": decoded.useremail })
+                return res.json({ "allProducts": allProducts, "message": "success" })
+
             });
 
-        }
-    });
+    //     }
+    // });
 
-    
-    
 })
 
 app.get('/admin/orders', (req, res)=>{
@@ -183,10 +184,10 @@ app.get('/product/:productID',(req, res)=>{
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
     
-    jwt.verify(token, 'secret', function(err, decoded) {
-        if (err) {
-            return res.json({ "message": 'Failed to authenticate token.' })
-        } else {
+    // jwt.verify(token, 'secret', function(err, decoded) {
+    //     if (err) {
+    //         return res.json({ "message": 'Failed to authenticate token.' })
+    //     } else {
             
             
             let query = ProductModel.findById(req.params.productID);
@@ -197,8 +198,8 @@ app.get('/product/:productID',(req, res)=>{
                 return res.json({ "product": product, "message": "success" })
                 console.log(product)
             })
-        }
-    })
+    //     }
+    // })
     
 })
 
@@ -215,10 +216,10 @@ app.get('/users/bucket/delete', async (req, res) => {
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
     
-    jwt.verify(token, 'secret', function(err, decoded) {
-        if (err) {
-            return res.json({ "message": 'Failed to authenticate token.' })
-        } else {
+    // jwt.verify(token, 'secret', function(err, decoded) {
+    //     if (err) {
+    //         return res.json({ "message": 'Failed to authenticate token.' })
+    //     } else {
             console.log(mongoose.connection.collection("myusers"))
             console.log("Удалён");
             console.log(req.query.useremail);
@@ -229,8 +230,8 @@ app.get('/users/bucket/delete', async (req, res) => {
                     { $pull: { 'productsInBucket': { name: req.query.productname } } }
             );
             return res.json({ "status": "OK", "message": "success" })
-        }
-    })
+    //     }
+    // })
 })
 
 app.get('/users/bucket/buy', (req, res)=>{
@@ -239,10 +240,10 @@ app.get('/users/bucket/buy', (req, res)=>{
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
 
-    jwt.verify(token, 'secret', function(err, decoded) {
-        if (err) {
-            return res.json({ "message": 'Failed to authenticate token.' })
-        } else {
+    // jwt.verify(token, 'secret', function(err, decoded) {
+    //     if (err) {
+    //         return res.json({ "message": 'Failed to authenticate token.' })
+    //     } else {
             let query = UsersModel.findOne({'email': req.query.useremail }, function(err, user){
                 if (err){
                     res.json({ "status": "Error", "message": "success" })
@@ -290,8 +291,8 @@ app.get('/users/bucket/buy', (req, res)=>{
                     }
                 }
             })
-        }
-    })
+    //     }
+    // })
 })
 
 app.get('/users/amount',(req, res)=>{
@@ -301,10 +302,10 @@ app.get('/users/amount',(req, res)=>{
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
    
-    jwt.verify(token, 'secret', function(err, decoded) {
-        if (err) {
-            return res.json({ "message": 'Failed to authenticate token.' })
-        } else {
+    // jwt.verify(token, 'secret', function(err, decoded) {
+    //     if (err) {
+    //         return res.json({ "message": 'Failed to authenticate token.' })
+    //     } else {
             let query = UsersModel.findOne({'email': req.query.useremail }, function(err, user){
                 if (err || Array(req.query.useremail)[0] === undefined){
                     
@@ -326,8 +327,8 @@ app.get('/users/amount',(req, res)=>{
                     }
                 }
             })
-        }
-    })
+    //     }
+    // })
 
 })
 
@@ -355,9 +356,9 @@ app.get('/users/check', (req,res)=>{
 
             if(req.query.useremail == user.email && passwordCheck){
                 
-                token = jwt.sign({
-                    useremail: user.email
-                }, 'secret', { expiresIn: '5m' })
+                // token = jwt.sign({
+                //     useremail: user.email
+                // }, 'secret', { expiresIn: '5m' })
                 // window.localStorage.setItem("vuesupershoptoken", token)
                 return res.json({ "user": user, "status": "OK", "token": token })
             } else {
@@ -418,10 +419,10 @@ app.get('/users/bucket/add', (req, res)=>{
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
     
-    jwt.verify(token, 'secret', function(err, decoded) {
-        if (err) {
-            return res.json({ "message": 'Failed to authenticate token.' })
-        } else {
+    // jwt.verify(token, 'secret', function(err, decoded) {
+    //     if (err) {
+    //         return res.json({ "message": 'Failed to authenticate token.' })
+    //     } else {
             if(Array(req.query)[0] === undefined){
                 return res.json({ "message": 'success' })
             } else {
@@ -440,8 +441,8 @@ app.get('/users/bucket/add', (req, res)=>{
                     return res.json({ "status": "OK", "message": 'success' })
                 })
             }
-        }
-    })
+    //     }
+    // })
 })
 
 app.get(`/users/bucket`, (req, res)=>{
@@ -450,10 +451,10 @@ app.get(`/users/bucket`, (req, res)=>{
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
     
-    jwt.verify(token, 'secret', function(err, decoded) {
-        if (err) {
-            return res.json({ "message": 'Failed to authenticate token.' })
-        } else {
+    // jwt.verify(token, 'secret', function(err, decoded) {
+    //     if (err) {
+    //         return res.json({ "message": 'Failed to authenticate token.' })
+    //     } else {
             var myProductsInBucket = []
             let queryOfProductsInBucket = UsersModel.findOne({'email': req.query.useremail});
             let queryOfProducts = ProductModel.find({}).select(['name' ,'price']);
@@ -475,8 +476,8 @@ app.get(`/users/bucket`, (req, res)=>{
                 })
                 
             })
-        }
-    })
+    //     }
+    // })
 })
 
 app.get('/cleartoken',(req, res) => {
@@ -486,10 +487,10 @@ app.get('/cleartoken',(req, res) => {
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
 
-    token = jwt.sign({
-        useremail: 'custom@mail.ru'
-    }, 'secret', { expiresIn: 1 })
-    return res.json({ "status": "OK" })
+    // token = jwt.sign({
+    //     useremail: 'custom@mail.ru'
+    // }, 'secret', { expiresIn: 1 })
+    // return res.json({ "status": "OK" })
 })
 
 const port = process.env.PORT || 8080

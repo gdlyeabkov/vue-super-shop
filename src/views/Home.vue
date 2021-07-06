@@ -33,8 +33,9 @@ export default {
     return{
       allProducts: [],
       // isAuth: window.localStorage.getItem('auth') == 'true',
-      useremail:''
+      useremail:'',
       // useremail: window.localStorage.getItem('auth') == 'true' ? window.localStorage.getItem('useremail') : ""
+      token: window.localStorage.getItem('vuesupershoptoken')
     }
   },
   methods:{
@@ -65,14 +66,26 @@ export default {
         return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
       })
       .then(async result => {
-        if(JSON.parse(result).message.includes("success")){
-          console.log(JSON.parse(result))
-          if(JSON.parse(result).status.includes("OK")){
-            this.$router.push({ name: 'Bucket', query: { useremail: this.useremail } })  
+        
+        // if(JSON.parse(result).message.includes("success")){
+        //   console.log(JSON.parse(result))
+        //   if(JSON.parse(result).status.includes("OK")){
+        //     this.$router.push({ name: 'Bucket', query: { useremail: this.useremail } })  
+        //   }
+        // } else if(JSON.parse(result).message.includes("Failed")){
+        //   this.$router.push({ name: "UsersLogin" })
+        // }
+
+        jwt.verify(this.token, 'secret', (err, decoded) => {
+          if (err) {
+            this.$router.push({ name: "UsersLogin" })
+          } else {
+            if(JSON.parse(result).status.includes("OK")){
+              this.$router.push({ name: 'Bucket', query: { useremail: this.useremail } })  
+            }
           }
-        } else if(JSON.parse(result).message.includes("Failed")){
-          this.$router.push({ name: "UsersLogin" })
-        }
+        })
+
       })
     },
     toAmount(){
@@ -116,14 +129,26 @@ export default {
         //   this.$router.push({ name: 'UsersLogin' })
         // }
         
-        if(JSON.parse(result).message.includes("success")){
+        // if(JSON.parse(result).message.includes("success")){
           // console.log(window.localStorage.getItem('auth'))
-          this.allProducts = JSON.parse(result).allProducts
-          this.useremail = JSON.parse(result).useremail
-        } else if(JSON.parse(result).message.includes("Failed")) {
-          console.log('редирект')
-          this.$router.push({ name: "UsersLogin" })
-        }
+          // this.allProducts = JSON.parse(result).allProducts
+          // this.useremail = JSON.parse(result).useremail
+        // } else if(JSON.parse(result).message.includes("Failed")) {
+          // console.log('редирект')
+          // this.$router.push({ name: "UsersLogin" })
+        // }
+
+        jwt.verify(this.token, 'secret', (err, decoded) => {
+          if (err) {
+            this.$router.push({ name: "UsersLogin" })
+          } else {
+            this.allProducts = JSON.parse(result).allProducts
+            // this.useremail = JSON.parse(result).useremail
+            this.useremail = decoded.useremail
+
+          }
+        })
+
       });
   },
   components: {

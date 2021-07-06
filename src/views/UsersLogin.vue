@@ -22,13 +22,16 @@
 import Header from '@/components/Header.vue' 
 import Footer from '@/components/Footer.vue' 
 
+import * as jwt from 'jsonwebtoken'
+
 export default {
   name: 'UsersLogin',
   data(){
     return {
       useremail: '',
       userpassword: '',
-      errors: ""
+      errors: "",
+      token: ""
     }
   },
   methods:{
@@ -63,10 +66,15 @@ export default {
           if(JSON.parse(result).status.includes("OK")){
             
             //window.localStorage.setItem("userlogin", "true")
-            window.localStorage.setItem("vuesupershoptoken", JSON.parse(result).token)
+            // window.localStorage.setItem("vuesupershoptoken", JSON.parse(result).token)
             window.localStorage.setItem("auth", "true");
             // window.localStorage.setItem("useremail", this.useremail);
             
+            this.token = jwt.sign({
+              useremail: this.useremail
+            }, 'secret', { expiresIn: '5m' })
+            window.localStorage.setItem("vuesupershoptoken", this.token)
+
             this.$router.push({ name: "Home" })
           } else if(JSON.parse(result).status.includes("Error")){
             this.errors = "Такого пользователя не существует!!!"

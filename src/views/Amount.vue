@@ -24,6 +24,7 @@ export default {
     return {
       myamount: 0,
       moneys: 0,
+      token: window.localStorage.getItem('vuesupershoptoken'),
       // useremail: window.localStorage.getItem('auth') == 'true' ? window.localStorage.getItem('useremail') : "",
       // isAuth: window.localStorage.getItem('auth') == 'true'
     }
@@ -55,15 +56,30 @@ export default {
           return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
         })
         .then(result => {
-          console.log(JSON.parse(result))
-          if(JSON.parse(result).message.includes("success")){
-            if(JSON.parse(result).status.includes("OK")){
-              this.moneys = JSON.parse(result).moneys
-              this.useremail = JSON.parse(result).useremail
+          
+          // console.log(JSON.parse(result))
+          // if(JSON.parse(result).message.includes("success")){
+          //   if(JSON.parse(result).status.includes("OK")){
+          //     this.moneys = JSON.parse(result).moneys
+          //     this.useremail = JSON.parse(result).useremail
+          //   }
+          // } else if(JSON.parse(result).message.includes("Failed")){
+          //   this.$router.push({ name: "UsersLogin" })
+          // }
+
+          jwt.verify(this.token, 'secret', (err, decoded) => {
+            if (err) {
+              this.$router.push({ name: "UsersLogin" })
+            } else {
+                if(JSON.parse(result).status.includes("OK")){
+                this.moneys = JSON.parse(result).moneys
+                // this.useremail = JSON.parse(result).useremail
+                this.useremail = decoded.useremail
+
+              }
             }
-          } else if(JSON.parse(result).message.includes("Failed")){
-            this.$router.push({ name: "UsersLogin" })
-          }
+          })
+
         });
   },
   methods:{
