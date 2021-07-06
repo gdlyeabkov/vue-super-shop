@@ -101,6 +101,8 @@
 </template>
 
 <script>
+import * as jwt from 'jsonwebtoken'
+
 export default {
   name: 'Header',
   data(){
@@ -152,6 +154,7 @@ export default {
             useremail: 'custom@mail.ru'
           }, 'secret', { expiresIn: 1 })
           this.$router.push({ name: "UsersLogin" })
+          
       //   }
       // })
     },

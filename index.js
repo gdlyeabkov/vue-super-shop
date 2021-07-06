@@ -279,6 +279,11 @@ app.get('/users/bucket/buy', (req, res)=>{
                                 if(err){
                                     return res.json({ "status": "Error", "message": "success" })
                                 }
+                                // UsersModel.updateOne(
+                                //     { email: req.query.useremail },
+                                //     { $set: { "productsInBucket": [] } }
+                                // );
+                                
                                 return res.json({ "status": "OK", "message": "success" })
                             })
                             
