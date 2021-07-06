@@ -319,7 +319,8 @@ app.get('/users/amount',(req, res)=>{
                             if(err){
                                 return res.json({ "status": "Error", "message": "success" })
                             }
-                            return res.json({ "status": "OK", "moneys": user.moneys, "message": "success", "useremail": decoded.useremail })
+                            // return res.json({ "status": "OK", "moneys": user.moneys, "message": "success", "useremail": decoded.useremail })
+                            return res.json({ "status": "OK", "moneys": user.moneys, "message": "success" })
                         })
                         
                     } else {
