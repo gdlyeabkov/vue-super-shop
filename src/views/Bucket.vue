@@ -37,7 +37,7 @@
 import Header from '@/components/Header.vue' 
 import Footer from '@/components/Footer.vue' 
 
-import * as jwt from 'jsonwebtoken' 
+import * as jwt from 'jsonwebtoken'
 
 export default {
   name: 'Bucket',
