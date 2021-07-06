@@ -233,17 +233,17 @@ app.get('/users/bucket/delete', async (req, res) => {
     })
 })
 
-app.get('/users/bucket/buy',async (req, res)=>{
+app.get('/users/bucket/buy', (req, res)=>{
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
 
-    jwt.verify(token, 'secret', async function(err, decoded) {
+    jwt.verify(token, 'secret', function(err, decoded) {
         if (err) {
             return res.json({ "message": 'Failed to authenticate token.' })
         } else {
-            let query = await UsersModel.findOne({'email': req.query.useremail }, async function(err, user){
+            let query = UsersModel.findOne({'email': req.query.useremail }, function(err, user){
                 if (err){
                     res.json({ "status": "Error", "message": "success" })
                 } else {
@@ -257,7 +257,7 @@ app.get('/users/bucket/buy',async (req, res)=>{
                             }
                         })
                         if(user.moneys >= commonPrice){
-                            const order = await new OrderModel({ ownername: req.query.useremail, price: commonPrice });
+                            const order = new OrderModel({ ownername: req.query.useremail, price: commonPrice });
                             order.save(function (err) {
                                 if(err){
                                     return res.json({ "message": "success" })
@@ -265,19 +265,28 @@ app.get('/users/bucket/buy',async (req, res)=>{
                                     console.log('заказ создан')
                                     // res.json({ "status": "OK" })
                                     // return res.json({ "message": "success" })
+                                
+                                    // res.json({ "status": "OK", "message": "success" })
+
                                 }
                             });
                             
-                            await UsersModel.updateOne({ email: req.query.useremail }, 
+                            UsersModel.updateOne({ email: req.query.useremail }, 
                             { 
                                 "$inc": { "moneys": -commonPrice }
+                            }, (err, user) => {
+                                if(err){
+                                    return res.json({ "status": "Error", "message": "success" })
+                                }
+                                return res.json({ "status": "OK", "message": "success" })
                             })
+                            
                         } else if(user.moneys < commonPrice){
                             console.log('нехватает денег')
-                            res.json({ "status": "Error", "message": "success" })
+                            return res.json({ "status": "Error", "message": "success" })
                         }
                     } else {
-                        res.json({ "status": "OK", "message": "success" })
+                        return res.json({ "status": "Error", "message": "success" })
                     }
                 }
             })
@@ -470,11 +479,17 @@ app.get(`/users/bucket`, (req, res)=>{
     })
 })
 
-app.get('/cleartoken', (req, res) => {
+app.get('/cleartoken',(req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+
     token = jwt.sign({
         useremail: 'custom@mail.ru'
     }, 'secret', { expiresIn: 1 })
-    res.json({ "status": "OK" })
+    return res.json({ "status": "OK" })
 })
 
 const port = process.env.PORT || 8080

@@ -121,6 +121,7 @@ export default {
         return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
       })
       .then(result => {
+        console.log(JSON.parse(result))
         if(JSON.parse(result).message.includes("success")){
           // location.reload()
           if(JSON.parse(result).status.includes("OK")){
@@ -132,7 +133,7 @@ export default {
               this.errors = ''
             }, 5000)
           }
-        } else if(JSON.parse(result).message.includes("success")){
+        } else if(JSON.parse(result).message.includes("Failed")){
           this.$router.push({ name: "UsersLogin" })
         }
       });

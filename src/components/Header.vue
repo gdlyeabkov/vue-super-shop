@@ -36,7 +36,7 @@
         </div>
         <div v-else-if="auth"  style="float: right;">        
           <li>
-            <span class="badge bg-danger"><a class="badge bg-danger" @click="logoutUser" >Выйти</a></span>
+            <span class="badge bg-danger"><a class="badge bg-danger" style="cursor: pointer;" @click="logoutUser()" >Выйти</a></span>
           </li>
           <li>
             <span class="badge bg-danger">
@@ -118,7 +118,7 @@ export default {
       }
     },
     logoutUser(){
-      fetch(`http://localhost:4000/cleartoken`, {
+      fetch(`https://vuesupershop.herokuapp.com/cleartoken`, {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {
@@ -143,7 +143,7 @@ export default {
     }).then(stream => {
         return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
       })
-      .then(async result => {
+      .then(result => {
         console.log(JSON.parse(result))
           
         if(JSON.parse(result).status.includes("OK")){
