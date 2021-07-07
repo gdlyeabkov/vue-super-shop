@@ -103,8 +103,11 @@ export default {
       // this.$router.push({ path: this.$route.query.redirectroute })
       
       // а это будет работать всегда
-      this.$router.push({ name: "Home" })
-    
+      if(this.$route.query.redirectroute.includes('users/login') || this.$route.query.redirectroute.includes('users/register')){
+        this.$router.push({ path: this.$route.query.redirectroute })
+      } else if(!this.$route.query.redirectroute.includes('users/login') && !this.$route.query.redirectroute.includes('users/register')){
+        this.$router.push({ name: "Home" })
+      }
     } else {
       
       // логика домашней страницы
