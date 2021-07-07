@@ -496,6 +496,6 @@ app.get('**', (req, res) => {
 
 // app.use('**', serveStatic(path.join(__dirname, '/dist')))
 
-// const port = process.env.PORT || 8080
-const port = 4000
+const port = process.env.PORT || 8080
+// const port = 4000
 app.listen(port)
