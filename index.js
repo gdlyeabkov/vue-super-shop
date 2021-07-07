@@ -488,6 +488,14 @@ app.get('/cleartoken',(req, res) => {
     // return res.json({ "status": "OK" })
 })
 
-const port = process.env.PORT || 8080
-// const port = 4000
+app.get('**', (req, res) => {
+    console.log('redirect')
+    // return res.json({ "redirectroute": req.path })
+    return res.redirect(`/?redirectroute=${req.path}`)
+})
+
+// app.use('**', serveStatic(path.join(__dirname, '/dist')))
+
+// const port = process.env.PORT || 8080
+const port = 4000
 app.listen(port)

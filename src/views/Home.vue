@@ -96,8 +96,14 @@ export default {
     
     // const verification = jwt.verify(window.localStorage.getItem('vuesupershoptoken'), 'APP_SECRET')
     // console.log("verification:", verification)
-    
-    fetch('https://vuesupershop.herokuapp.com/home', {
+    if(this.$route.query.redirectroute !== null && this.$route.query.redirectroute !== undefined){
+      // логика перенаправления
+      this.$router.push({ path: this.$route.query.redirectroute })
+    } else {
+      
+      // логика домашней страницы
+      
+      fetch('https://vuesupershop.herokuapp.com/home', {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {
@@ -150,6 +156,8 @@ export default {
         })
 
       });
+    }
+
   },
   components: {
     Header,
