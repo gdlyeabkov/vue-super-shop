@@ -16,12 +16,12 @@ const routes = [
     component: Home
   },
   {
-    path: '/product/:productID',
+    path: '/products/:productID',
     name: 'product',
     component: Product
   },
   {
-    path: '/users/usercreatesuccess',
+    path: '/user/usercreatesuccess',
     name: 'UserCreateSuccess',
     component: UserCreateSuccess
   },
@@ -31,7 +31,7 @@ const routes = [
     component: OrdersList
   },
   {
-    path: '/users/bucket',
+    path: '/user/bucket',
     name: 'Bucket',
     component: Bucket
   },
@@ -46,7 +46,7 @@ const routes = [
     component: UsersRegistry
   },
   {
-    path: '/users/amount',
+    path: '/user/amount',
     name: 'Amount',
     component: Amount
   }

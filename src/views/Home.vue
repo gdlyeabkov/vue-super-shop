@@ -17,7 +17,7 @@
     </div>
   </div>
 </div>
-<Footer/>
+<Footer />
 </template>
 
 <script>
@@ -169,7 +169,7 @@ export default {
    
   }
   .card > .card-header {
-    max-height: 65px;
+    max-height: 58px;
     overflow: hidden;
   }
   .card {

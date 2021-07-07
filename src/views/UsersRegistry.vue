@@ -15,7 +15,7 @@
       <input v-model="username" type="text" id="" class="username form-control" placeholder="Name" required="" autofocus="">
       <div class="checkbox mb-3">
       </div>
-      <button @click="registerNewUser" class="btn btn-lg btn-danger btn-block registerBtn">Зарегистрироваться</button>
+      <button style="font-size: 16px; min-width: 175px;" @click="registerNewUser" class="btn btn-lg btn-danger btn-block registerBtn">Зарегистрироваться</button>
       <div class="customErros">{{ errors }}</div>
     </div>
   </div>

@@ -181,7 +181,7 @@ export default {
     left: 0px;
     /* display: flex;
     justify-content: center; */
-    height: 100%;
+    height: 130%;
     width: 35%;
     z-index: 1;
   }

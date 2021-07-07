@@ -203,9 +203,6 @@ app.get('/product/:productID',(req, res)=>{
     
 })
 
-app.get('/users/register',(req, res)=>{
-    console.log(Array(req.query.useremail)[0] === undefined)
-})
 app.get('/users/logout',(req, res)=>{
 
 })
@@ -338,14 +335,6 @@ app.get('/users/amount',(req, res)=>{
 
 })
 
-app.get('/users/login',(req, res)=>{
-
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
-   
-})
 app.get('/users/check', (req,res)=>{
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Credentials', true);

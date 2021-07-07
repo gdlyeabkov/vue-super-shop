@@ -15,7 +15,7 @@
             <button @click="deleteFromBucket(product.name)"  class="btn btn-danger">удалить из корзины</button>
           </div>
         </div>
-        <button style="font-size: 22px;" @click="addOrder()" class="order form-control btn btn-success">
+        <button style="font-size: 22px; min-width: 150px;" @click="addOrder()" class="order form-control btn btn-success">
           Оформить заказ {{ priceForAllOrders }}$
         </button>
         <p class="customErros">

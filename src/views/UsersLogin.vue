@@ -10,7 +10,7 @@
       <input v-model="userpassword" type="password" id="inputPassword" class="userpassword form-control" placeholder="Password" required="">
       <div class="checkbox mb-3">
       </div>
-      <button @click="loginUser" class="btn btn-lg btn-danger btn-block loginBtn">Войти</button>       
+      <button @click="loginUser" style="min-width: 85px;" class="btn btn-lg btn-danger btn-block loginBtn">Войти</button>       
       <div class="customErros">{{ errors }}</div>
     </div>
   </div>
