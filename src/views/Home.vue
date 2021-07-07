@@ -98,7 +98,13 @@ export default {
     // console.log("verification:", verification)
     if(this.$route.query.redirectroute !== null && this.$route.query.redirectroute !== undefined){
       // логика перенаправления
-      this.$router.push({ path: this.$route.query.redirectroute })
+
+      // работает но не всегда потому что некоторые маршруты требуют query параметры но ниже они не передаются
+      // this.$router.push({ path: this.$route.query.redirectroute })
+      
+      // а это будет работать всегда
+      this.$router.push({ name: "Home" })
+    
     } else {
       
       // логика домашней страницы
