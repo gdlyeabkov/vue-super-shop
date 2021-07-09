@@ -15,13 +15,7 @@ app.use('/', serveStatic(path.join(__dirname, '/dist')))
 
 app.use(express.urlencoded({ extended: true }));
 
-
-var auth = false
 const url = `mongodb+srv://glebClusterUser:glebClusterUserPassword@cluster0.fvfru.mongodb.net/products?retryWrites=true&w=majority`;
-
-var options = {
-    root: path.join(__dirname, 'views'),
-}
 
 const connectionParams={
     useNewUrlParser: true,
@@ -66,64 +60,23 @@ const OrderModel = mongoose.model('OrderModel', OrderSchema);
 
 const UsersModel = mongoose.model('UsersModel', UsersSchema, 'myusers');
 
-// var JwtStrategy = require('passport-jwt').Strategy,
-//     ExtractJwt = require('passport-jwt').ExtractJwt;
-// var opts = {}
-// opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-// opts.secretOrKey = 'secret';
-// opts.issuer = 'accounts.examplesoft.com';
-// opts.audience = 'yoursite.net';
-// passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
-//     UsersModel.findOne({id: jwt_payload.sub}, function(err, user) {
-//         if (err) {
-//             return done(err, false);
-//         }
-//         if (user) {
-//             return done(null, user)
-//         } else {
-//             return done(null, false)
-//             // or you could create a new account
-//         }
-//     })
-// }))
-
-// app.get('/home', passport.authenticate('jwt', { session: false }), (req, res)=>{
 app.get('/home', (req, res)=>{
     //получение всех записей
-    console.log('получение всех записей')
     let query = ProductModel.find({}).select(['name', 'price']);
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
-    
-    // let security = jwt.verify(token, 'shhhhh')
-    // jwt.verify(token, 'secret', function(err, decoded) {
-        // if (err) {
-        //     return res.json({ message: 'Failed to authenticate token.' });
-        // } else {
-            // if everything is good, save to request for use in other routes
-            // req.decoded = decoded;
-            // next();
-            
-            query.exec( (err, allProducts) => {
-                if (err){
-                    return res.json({ message: 'Failed to authenticate token.' });
-                }
-                if(Array(req.query.useremail)[0] === undefined){
-                   console.log(allProducts)
-                    // return res.json({ "allProducts": allProducts, "message": "success", "useremail": decoded.useremail })
-                    return res.json({ "allProducts": allProducts, "message": "success" })
-                }
-                let mailOfUser = req.query.useremail
-                // return res.json({ "allProducts": allProducts, "message": "success", "useremail": decoded.useremail })
-                return res.json({ "allProducts": allProducts, "message": "success" })
-
-            });
-
-    //     }
-    // });
-
+    query.exec( (err, allProducts) => {
+        if (err){
+            return res.json({ message: 'Failed to authenticate token.' });
+        }
+        if(Array(req.query.useremail)[0] === undefined){
+            return res.json({ "allProducts": allProducts, "message": "success" })
+        }
+        let mailOfUser = req.query.useremail
+        return res.json({ "allProducts": allProducts, "message": "success" })
+    });
 })
 
 app.get('/admin/orders', (req, res)=>{
@@ -161,7 +114,6 @@ app.get('/admin/products/add', async (req, res)=>{
                 return
             } else {
                 return res.json({ "status": "OK" })
-                // res.redirect('/home')
             }
         })
     }
@@ -183,28 +135,14 @@ app.get('/product/:productID',(req, res)=>{
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
-    
-    // jwt.verify(token, 'secret', function(err, decoded) {
-    //     if (err) {
-    //         return res.json({ "message": 'Failed to authenticate token.' })
-    //     } else {
             
-            
-            let query = ProductModel.findById(req.params.productID);
-                query.exec((err, product) => {
-                if (err){
-                    return res.json({ "message": "success" })
-                }
-                return res.json({ "product": product, "message": "success" })
-                console.log(product)
-            })
-    //     }
-    // })
-    
-})
-
-app.get('/users/logout',(req, res)=>{
-
+    let query = ProductModel.findById(req.params.productID);
+        query.exec((err, product) => {
+        if (err){
+            return res.json({ "message": "success" })
+        }
+        return res.json({ "product": product, "message": "success" })
+    })    
 })
 
 app.get('/users/bucket/delete', async (req, res) => {
@@ -213,22 +151,11 @@ app.get('/users/bucket/delete', async (req, res) => {
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
     
-    // jwt.verify(token, 'secret', function(err, decoded) {
-    //     if (err) {
-    //         return res.json({ "message": 'Failed to authenticate token.' })
-    //     } else {
-            console.log(mongoose.connection.collection("myusers"))
-            console.log("Удалён");
-            console.log(req.query.useremail);
-            console.log(req.query.productname);
-            mongoose.connection.collection("myusers").updateOne(
-                
-                    { email: req.query.useremail },
-                    { $pull: { 'productsInBucket': { name: req.query.productname } } }
-            );
-            return res.json({ "status": "OK", "message": "success" })
-    //     }
-    // })
+    mongoose.connection.collection("myusers").updateOne(
+        { email: req.query.useremail },
+        { $pull: { 'productsInBucket': { name: req.query.productname } } }
+    );
+    return res.json({ "status": "OK", "message": "success" })
 })
 
 app.get('/users/bucket/buy', (req, res)=>{
@@ -237,64 +164,45 @@ app.get('/users/bucket/buy', (req, res)=>{
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
 
-    // jwt.verify(token, 'secret', function(err, decoded) {
-    //     if (err) {
-    //         return res.json({ "message": 'Failed to authenticate token.' })
-    //     } else {
-            let query = UsersModel.findOne({'email': req.query.useremail }, function(err, user){
-                if (err){
-                    res.json({ "status": "Error", "message": "success" })
-                } else {
-                    if(user != null && user != undefined){
-                        let commonPrice = 0
-                        user.productsInBucket.forEach(function (product){
-                            if(new Map(product).get('price') == null){
-                                commonPrice += 0
-                            } else {
-                                commonPrice += new Map(product).get('price')
-                            }
-                        })
-                        if(user.moneys >= commonPrice){
-                            const order = new OrderModel({ ownername: req.query.useremail, price: commonPrice });
-                            order.save(function (err) {
-                                if(err){
-                                    return res.json({ "message": "success" })
-                                } else {
-                                    console.log('заказ создан')
-                                    // res.json({ "status": "OK" })
-                                    // return res.json({ "message": "success" })
-                                
-                                    // res.json({ "status": "OK", "message": "success" })
-
-                                }
-                            });
-                            
-                            UsersModel.updateOne({ email: req.query.useremail }, 
-                            { 
-                                "$inc": { "moneys": -commonPrice }
-                            }, (err, user) => {
-                                if(err){
-                                    return res.json({ "status": "Error", "message": "success" })
-                                }
-                                // UsersModel.updateOne(
-                                //     { email: req.query.useremail },
-                                //     { $set: { "productsInBucket": [] } }
-                                // );
-                                
-                                return res.json({ "status": "OK", "message": "success" })
-                            })
-                            
-                        } else if(user.moneys < commonPrice){
-                            console.log('нехватает денег')
-                            return res.json({ "status": "Error", "message": "success" })
-                        }
+    let query = UsersModel.findOne({'email': req.query.useremail }, function(err, user){
+        if (err){
+            res.json({ "status": "Error", "message": "success" })
+        } else {
+            if(user != null && user != undefined){
+                let commonPrice = 0
+                user.productsInBucket.forEach(function (product){
+                    if(new Map(product).get('price') == null){
+                        commonPrice += 0
                     } else {
-                        return res.json({ "status": "Error", "message": "success" })
+                        commonPrice += new Map(product).get('price')
                     }
+                })
+                if(user.moneys >= commonPrice){
+                    const order = new OrderModel({ ownername: req.query.useremail, price: commonPrice });
+                    order.save(function (err) {
+                        if(err){
+                            return res.json({ "message": "success" })
+                        }
+                        //заказ создан
+                    })
+                    
+                    UsersModel.updateOne({ email: req.query.useremail }, 
+                    { 
+                        "$inc": { "moneys": -commonPrice }
+                    }, (err, user) => {
+                        if(err){
+                            return res.json({ "status": "Error", "message": "success" })
+                        }  
+                        return res.json({ "status": "OK", "message": "success" })
+                    })      
+                } else if(user.moneys < commonPrice){
+                    return res.json({ "status": "Error", "message": "success" })
                 }
-            })
-    //     }
-    // })
+            } else {
+                return res.json({ "status": "Error", "message": "success" })
+            }
+        }
+    })
 })
 
 app.get('/users/amount',(req, res)=>{
@@ -304,35 +212,27 @@ app.get('/users/amount',(req, res)=>{
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
    
-    // jwt.verify(token, 'secret', function(err, decoded) {
-    //     if (err) {
-    //         return res.json({ "message": 'Failed to authenticate token.' })
-    //     } else {
-            let query = UsersModel.findOne({'email': req.query.useremail }, function(err, user){
-                if (err || Array(req.query.useremail)[0] === undefined){
-                    
-                } else {
-                    if(user != null && user != undefined){
-                        let incerementAmountBy = req.query.amount
-                        UsersModel.updateOne({ email: req.query.useremail }, 
-                        { 
-                            "$inc": { "moneys": incerementAmountBy }
-                        }, (err, customUser) => {
-                            if(err){
-                                return res.json({ "status": "Error", "message": "success" })
-                            }
-                            // return res.json({ "status": "OK", "moneys": user.moneys, "message": "success", "useremail": decoded.useremail })
-                            return res.json({ "status": "OK", "moneys": user.moneys, "message": "success" })
-                        })
-                        
-                    } else {
+    let query = UsersModel.findOne({'email': req.query.useremail }, function(err, user){
+        if (err || Array(req.query.useremail)[0] === undefined){
+            
+        } else {
+            if(user != null && user != undefined){
+                let incerementAmountBy = req.query.amount
+                UsersModel.updateOne({ email: req.query.useremail }, 
+                { 
+                    "$inc": { "moneys": incerementAmountBy }
+                }, (err, customUser) => {
+                    if(err){
                         return res.json({ "status": "Error", "message": "success" })
                     }
-                }
-            })
-    //     }
-    // })
-
+                    return res.json({ "status": "OK", "moneys": user.moneys, "message": "success" })
+                })
+                
+            } else {
+                return res.json({ "status": "Error", "message": "success" })
+            }
+        }
+    })
 })
 
 app.get('/users/check', (req,res)=>{
@@ -350,11 +250,6 @@ app.get('/users/check', (req,res)=>{
             let passwordCheck = bcrypt.compareSync(req.query.userpassword, user.password) && req.query.userpassword !== ''
 
             if(req.query.useremail == user.email && passwordCheck){
-                
-                // token = jwt.sign({
-                //     useremail: user.email
-                // }, 'secret', { expiresIn: '5m' })
-                // window.localStorage.setItem("vuesupershoptoken", token)
                 return res.json({ "user": user, "status": "OK", "token": token })
             } else {
                 return res.json({ "status": "Error" })
@@ -372,11 +267,7 @@ app.get('/users/usercreatesuccess',async (req, res)=>{
     query.exec(async (err, allUsers) => {
         if (err){
             return res.send('rollback')
-            console.log('rollback')
         }
-        console.log(req.query.useremail)
-        console.log(allUsers)
-        console.log(req.query.useremail in allUsers)
         let userExists = false
         allUsers.forEach(user => {
             if(user.email.includes(req.query.useremail)){
@@ -384,8 +275,6 @@ app.get('/users/usercreatesuccess',async (req, res)=>{
             }
         });
         if(userExists){
-            console.log(req.query.useremail in allUsers)
-            console.log('rollback')
             return res.send('rollback')
         } else {
 
@@ -396,12 +285,9 @@ app.get('/users/usercreatesuccess',async (req, res)=>{
             const user = await new UsersModel({ email: req.query.useremail, password: encodedPassword, name:req.query.username, age:req.query.userage });
             user.save(function (err) {
                 if(err){
-                    console.log('rollback')
                     return res.send('rollback')
                 } else {
-                    auth = true
                     return res.send('created')
-                    console.log('created')
                 }
             })
         }
@@ -414,30 +300,24 @@ app.get('/users/bucket/add', (req, res)=>{
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
     
-    // jwt.verify(token, 'secret', function(err, decoded) {
-    //     if (err) {
-    //         return res.json({ "message": 'Failed to authenticate token.' })
-    //     } else {
-            if(Array(req.query)[0] === undefined){
-                return res.json({ "message": 'success' })
-            } else {
-                UsersModel.updateOne({ email: req.query.useremail },
-                    { $push: 
-                        { 
-                            productsInBucket: [
-                                {
-                                    name: req.query.productname,
-                                    price: Number(req.query.productprice)
-                                }
-                            ]
-                            
+    if(Array(req.query)[0] === undefined){
+        return res.json({ "message": 'success' })
+    } else {
+        UsersModel.updateOne({ email: req.query.useremail },
+            { $push: 
+                { 
+                    productsInBucket: [
+                        {
+                            name: req.query.productname,
+                            price: Number(req.query.productprice)
                         }
-                }, (err, user) => {
-                    return res.json({ "status": "OK", "message": 'success' })
-                })
-            }
-    //     }
-    // })
+                    ]
+                    
+                }
+        }, (err, user) => {
+            return res.json({ "status": "OK", "message": 'success' })
+        })
+    }
 })
 
 app.get(`/users/bucket`, (req, res)=>{
@@ -446,56 +326,31 @@ app.get(`/users/bucket`, (req, res)=>{
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
     
-    // jwt.verify(token, 'secret', function(err, decoded) {
-    //     if (err) {
-    //         return res.json({ "message": 'Failed to authenticate token.' })
-    //     } else {
-            var myProductsInBucket = []
-            let queryOfProductsInBucket = UsersModel.findOne({'email': req.query.useremail});
-            let queryOfProducts = ProductModel.find({}).select(['name' ,'price']);
-            queryOfProducts.exec( (err, allProducts) => {
-                if (err){
-                    return res.json({ "message": 'success' })
-                }
-                queryOfProductsInBucket.exec( (err, allProductsInBucketOfThisUser) => {
-                    if(err){
-                        return res.json({ "message": 'success' })
-                    }
-                    allProductsInBucketOfThisUser.productsInBucket.forEach(function(productInBucket){                        
-                        myProductsInBucket.push(productInBucket)
-                        console.log(productInBucket)
-                    })
-                    console.log(myProductsInBucket)
-                    console.log(allProductsInBucketOfThisUser)
-                    res.json({ "productsInBucket": allProductsInBucketOfThisUser.productsInBucket, "message": 'success' })
-                })
-                
+    var myProductsInBucket = []
+    let queryOfProductsInBucket = UsersModel.findOne({'email': req.query.useremail});
+    let queryOfProducts = ProductModel.find({}).select(['name' ,'price']);
+    queryOfProducts.exec( (err, allProducts) => {
+        if (err){
+            return res.json({ "message": 'success' })
+        }
+        queryOfProductsInBucket.exec( (err, allProductsInBucketOfThisUser) => {
+            if(err){
+                return res.json({ "message": 'success' })
+            }
+            allProductsInBucketOfThisUser.productsInBucket.forEach(function(productInBucket){                        
+                myProductsInBucket.push(productInBucket)
             })
-    //     }
-    // })
-})
-
-app.get('/cleartoken',(req, res) => {
-    
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
-
-    // token = jwt.sign({
-    //     useremail: 'custom@mail.ru'
-    // }, 'secret', { expiresIn: 1 })
-    // return res.json({ "status": "OK" })
+            res.json({ "productsInBucket": allProductsInBucketOfThisUser.productsInBucket, "message": 'success' })
+        })
+        
+    })
 })
 
 app.get('**', (req, res) => {
-    console.log('redirect')
-    // return res.json({ "redirectroute": req.path })
     return res.redirect(`/?redirectroute=${req.path}`)
 })
 
-// app.use('**', serveStatic(path.join(__dirname, '/dist')))
-
 const port = process.env.PORT || 8080
 // const port = 4000
+
 app.listen(port)
