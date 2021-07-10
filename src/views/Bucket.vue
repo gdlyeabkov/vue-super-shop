@@ -173,7 +173,9 @@ export default {
       
       });
     },
+    
     deleteFromBucket(productName, productId) {
+      // надо починить одиночное удаление
       fetch(`https://vuesupershop.herokuapp.com/users/bucket/delete?useremail=${this.$route.query.useremail}&productname=${productName}&productid=${productId}`, {
       mode: 'cors',
       method: 'GET'
