@@ -54,7 +54,7 @@ export default {
   },
   async mounted(){
     console.log(this.$route.query.useremail)
-    fetch(`http://localhost:4000/users/bucket?useremail=${this.$route.query.useremail}`, {
+    fetch(`https://vuesupershop.herokuapp.com/users/bucket?useremail=${this.$route.query.useremail}`, {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {
@@ -174,7 +174,7 @@ export default {
       });
     },
     deleteFromBucket(productName, productId) {
-      fetch(`http://localhost:4000/users/bucket/delete?useremail=${this.$route.query.useremail}&productname=${productName}&productid=${productId}`, {
+      fetch(`https://vuesupershop.herokuapp.com/users/bucket/delete?useremail=${this.$route.query.useremail}&productname=${productName}&productid=${productId}`, {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {

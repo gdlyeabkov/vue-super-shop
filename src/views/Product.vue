@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     addToBucket(){
-      fetch(`http://localhost:4000/users/bucket/add?useremail=${this.useremail}&productname=${this.product.name}&productprice=${this.product.price}&productid=${this.$route.params.productID}`, {
+      fetch(`https://vuesupershop.herokuapp.com/users/bucket/add?useremail=${this.useremail}&productname=${this.product.name}&productprice=${this.product.price}&productid=${this.$route.params.productID}`, {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {
@@ -83,7 +83,7 @@ export default {
   },
   async mounted(){
     console.log(this.$route.params.productID)
-    fetch(`http://localhost:4000/product/${this.$route.params.productID}`, {
+    fetch(`https://vuesupershop.herokuapp.com/product/${this.$route.params.productID}`, {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {

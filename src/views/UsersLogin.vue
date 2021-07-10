@@ -36,7 +36,7 @@ export default {
   },
   methods:{
     async loginUser(){
-      await fetch(`http://localhost:4000/users/check?useremail=${this.useremail}&userpassword=${this.userpassword}`, {
+      await fetch(`https://vuesupershop.herokuapp.com/users/check?useremail=${this.useremail}&userpassword=${this.userpassword}`, {
           mode: 'cors',
           method: 'GET'
         }).then(response => response.body).then(rb  => {
