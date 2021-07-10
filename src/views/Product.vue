@@ -1,6 +1,6 @@
 ﻿<template>
   <div class="home">
-    <Header :auth="true" :useremail="$route.query.useremail" />
+    <Header :auth="true" :useremail="useremail" />
     <div class="card" style="width: 18rem;">
       <div class="card-title">
         <h5 class="card-header bg-warning">
@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     addToBucket(){
-      fetch(`https://vuesupershop.herokuapp.com/users/bucket/add?useremail=${this.$route.query.useremail}&productname=${this.product.name}&productprice=${this.product.price}`, {
+      fetch(`http://localhost:4000/users/bucket/add?useremail=${this.useremail}&productname=${this.product.name}&productprice=${this.product.price}&productid=${this.$route.params.productID}`, {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {
@@ -74,7 +74,7 @@ export default {
           if (err) {
               this.$router.push({ name: "UsersLogin" })
           } else {
-            this.$router.push({ name: 'Bucket', query: { useremail: this.$route.query.useremail } })  
+            this.$router.push({ name: 'Bucket', query: { useremail: decoded.useremail } })  
           }
         })
 
@@ -83,7 +83,7 @@ export default {
   },
   async mounted(){
     console.log(this.$route.params.productID)
-    fetch(`https://vuesupershop.herokuapp.com/product/${this.$route.params.productID}`, {
+    fetch(`http://localhost:4000/product/${this.$route.params.productID}`, {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {
@@ -121,6 +121,7 @@ export default {
               this.$router.push({ name: "UsersLogin" })
           } else {
             this.product = JSON.parse(result).product
+            this.useremail = decoded.useremail
           }
         })
 

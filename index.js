@@ -153,7 +153,7 @@ app.get('/users/bucket/delete', async (req, res) => {
     
     mongoose.connection.collection("myusers").updateOne(
         { email: req.query.useremail },
-        { $pull: { 'productsInBucket': { name: req.query.productname } } }
+        { $pull: { 'productsInBucket': { _id: req.query.productid } } }
     );
     return res.json({ "status": "OK", "message": "success" })
 })
@@ -308,6 +308,7 @@ app.get('/users/bucket/add', (req, res)=>{
                 { 
                     productsInBucket: [
                         {
+                            _id: req.query.productid,
                             name: req.query.productname,
                             price: Number(req.query.productprice)
                         }
@@ -350,7 +351,7 @@ app.get('**', (req, res) => {
     return res.redirect(`/?redirectroute=${req.path}`)
 })
 
-const port = process.env.PORT || 8080
-// const port = 4000
+// const port = process.env.PORT || 8080
+const port = 4000
 
 app.listen(port)

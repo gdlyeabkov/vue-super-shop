@@ -40,7 +40,7 @@ export default {
   },
   methods:{
     async addToBucket(thisProduct){
-      fetch(`https://vuesupershop.herokuapp.com/users/bucket/add?useremail=${this.useremail}&productname=${thisProduct.name}&productprice=${thisProduct.price}`, {
+      fetch(`http://localhost:4000/users/bucket/add?useremail=${this.useremail}&productname=${thisProduct.name}&productprice=${thisProduct.price}&productid=${thisProduct._id}`, {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {
@@ -112,7 +112,7 @@ export default {
       
       // логика домашней страницы
       
-      fetch('https://vuesupershop.herokuapp.com/home', {
+      fetch('http://localhost:4000/home', {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {
