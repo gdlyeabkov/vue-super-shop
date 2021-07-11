@@ -150,7 +150,10 @@ app.get('/users/bucket/delete', async (req, res) => {
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
-    
+
+    console.log("productId: ", req.query.productid)
+    console.log("productName: ", req.query.productname)
+
     mongoose.connection.collection("myusers").updateOne(
         { email: req.query.useremail },
         { $pull: { 'productsInBucket': { _id: req.query.productid } } }
@@ -188,7 +191,8 @@ app.get('/users/bucket/buy', (req, res)=>{
                     
                     UsersModel.updateOne({ email: req.query.useremail }, 
                     { 
-                        "$inc": { "moneys": -commonPrice }
+                        "$inc": { "moneys": -commonPrice },
+                        "$set": { "productsInBucket": [] }
                     }, (err, user) => {
                         if(err){
                             return res.json({ "status": "Error", "message": "success" })
@@ -308,7 +312,7 @@ app.get('/users/bucket/add', (req, res)=>{
                 { 
                     productsInBucket: [
                         {
-                            _id: req.query.productid,
+                            _id: Math.floor(Math.random() * 500).toString(),
                             name: req.query.productname,
                             price: Number(req.query.productprice)
                         }
@@ -351,7 +355,7 @@ app.get('**', (req, res) => {
     return res.redirect(`/?redirectroute=${req.path}`)
 })
 
-const port = process.env.PORT || 8080
-// const port = 4000
+// const port = process.env.PORT || 8080
+const port = 4000
 
 app.listen(port)
