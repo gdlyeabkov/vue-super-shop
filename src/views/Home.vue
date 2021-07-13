@@ -35,12 +35,12 @@ export default {
       // isAuth: window.localStorage.getItem('auth') == 'true',
       useremail:'',
       // useremail: window.localStorage.getItem('auth') == 'true' ? window.localStorage.getItem('useremail') : ""
-      token: window.localStorage.getItem('vuesupershoptoken')
+      token: window.localStorage.getItem('markettowntoken')
     }
   },
   methods:{
     async addToBucket(thisProduct){
-      fetch(`https://vuesupershop.herokuapp.com/users/bucket/add?useremail=${this.useremail}&productname=${thisProduct.name}&productprice=${thisProduct.price}&productid=${thisProduct._id}`, {
+      fetch(`https://markettown.herokuapp.com/users/bucket/add?useremail=${this.useremail}&productname=${thisProduct.name}&productprice=${thisProduct.price}&productid=${thisProduct._id}`, {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {
@@ -112,7 +112,7 @@ export default {
       
       // логика домашней страницы
       
-      fetch('https://vuesupershop.herokuapp.com/home', {
+      fetch('https://markettown.herokuapp.com/home', {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {

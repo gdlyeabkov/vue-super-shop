@@ -29,13 +29,13 @@ export default {
   data(){
     return{
       product: {},
-      token: window.localStorage.getItem('vuesupershoptoken')
+      token: window.localStorage.getItem('markettowntoken')
       // isAuth: window.localStorage.getItem('auth') == 'true'
     }
   },
   methods: {
     addToBucket(){
-      fetch(`https://vuesupershop.herokuapp.com/users/bucket/add?useremail=${this.useremail}&productname=${this.product.name}&productprice=${this.product.price}&productid=${this.$route.params.productID}`, {
+      fetch(`https://markettown.herokuapp.com/users/bucket/add?useremail=${this.useremail}&productname=${this.product.name}&productprice=${this.product.price}&productid=${this.$route.params.productID}`, {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {
@@ -83,7 +83,7 @@ export default {
   },
   async mounted(){
     console.log(this.$route.params.productID)
-    fetch(`https://vuesupershop.herokuapp.com/product/${this.$route.params.productID}`, {
+    fetch(`https://markettown.herokuapp.com/product/${this.$route.params.productID}`, {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {

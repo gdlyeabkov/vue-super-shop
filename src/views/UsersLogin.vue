@@ -36,7 +36,7 @@ export default {
   },
   methods:{
     async loginUser(){
-      await fetch(`https://vuesupershop.herokuapp.com/users/check?useremail=${this.useremail}&userpassword=${this.userpassword}`, {
+      await fetch(`https://markettown.herokuapp.com/users/check?useremail=${this.useremail}&userpassword=${this.userpassword}`, {
           mode: 'cors',
           method: 'GET'
         }).then(response => response.body).then(rb  => {
@@ -73,7 +73,7 @@ export default {
             this.token = jwt.sign({
               useremail: this.useremail
             }, 'secret', { expiresIn: '5m' })
-            window.localStorage.setItem("vuesupershoptoken", this.token)
+            window.localStorage.setItem("markettowntoken", this.token)
 
             this.$router.push({ name: "Home" })
           } else if(JSON.parse(result).status.includes("Error")){

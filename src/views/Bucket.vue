@@ -49,12 +49,12 @@ export default {
       // isAuth: window.localStorage.getItem('auth') == 'true',
       priceForAllOrders: 0,
       errors: '',
-      token: window.localStorage.getItem('vuesupershoptoken')
+      token: window.localStorage.getItem('markettowntoken')
     }
   },
   async mounted(){
     console.log(this.$route.query.useremail)
-    fetch(`https://vuesupershop.herokuapp.com/users/bucket?useremail=${this.$route.query.useremail}`, {
+    fetch(`https://markettown.herokuapp.com/users/bucket?useremail=${this.$route.query.useremail}`, {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {
@@ -112,7 +112,7 @@ export default {
       }
     },
     addOrder(){
-      fetch(`https://vuesupershop.herokuapp.com/users/bucket/buy?useremail=${this.$route.query.useremail}`, {
+      fetch(`https://markettown.herokuapp.com/users/bucket/buy?useremail=${this.$route.query.useremail}`, {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {
@@ -176,7 +176,7 @@ export default {
     
     deleteFromBucket(productName, productId) {
       // надо починить одиночное удаление   
-      fetch(`https://vuesupershop.herokuapp.com/users/bucket/delete?useremail=${this.$route.query.useremail}&productname=${productName}&productid=${productId}`, {
+      fetch(`https://markettown.herokuapp.com/users/bucket/delete?useremail=${this.$route.query.useremail}&productname=${productName}&productid=${productId}`, {
       mode: 'cors',
       method: 'GET'
     }).then(response => response.body).then(rb  => {

@@ -26,13 +26,13 @@ export default {
     return {
       myamount: 0,
       moneys: 0,
-      token: window.localStorage.getItem('vuesupershoptoken'),
+      token: window.localStorage.getItem('markettowntoken'),
       // useremail: window.localStorage.getItem('auth') == 'true' ? window.localStorage.getItem('useremail') : "",
       // isAuth: window.localStorage.getItem('auth') == 'true'
     }
   },
   mounted(){
-    fetch(`https://vuesupershop.herokuapp.com/users/amount?useremail=${this.$route.query.useremail}&amount=0`, {
+    fetch(`https://markettown.herokuapp.com/users/amount?useremail=${this.$route.query.useremail}&amount=0`, {
           mode: 'cors',
           method: 'GET'
         }).then(response => response.body).then(rb  => {
@@ -86,7 +86,7 @@ export default {
   },
   methods:{
     async addAmount(){
-      await fetch(`https://vuesupershop.herokuapp.com/users/amount?useremail=${this.useremail}&amount=${this.myamount}`, {
+      await fetch(`https://markettown.herokuapp.com/users/amount?useremail=${this.useremail}&amount=${this.myamount}`, {
           mode: 'cors',
           method: 'GET'
         }).then(response => response.body).then(rb  => {

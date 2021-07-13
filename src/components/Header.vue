@@ -63,7 +63,7 @@
       <button @click="toggleSidebar()" class="customburger navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-        <a class="navbar-brand" href="#">VueSuperShop</a>
+        <a class="navbar-brand" href="#">Market Town</a>
         <ul class="navbar-nav">
           <div v-if="!burgerVisible">
             <div v-if="!auth">

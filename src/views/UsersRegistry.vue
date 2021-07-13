@@ -43,7 +43,7 @@ export default {
   methods:{
     registerNewUser(){
       // if(this.$route.query.useremail != null || this.$route.query.userpassword != null || this.$route.query.userage != null || this.$route.query.username != null){
-        fetch(`https://vuesupershop.herokuapp.com/users/usercreatesuccess?useremail=${this.useremail}&userpassword=${this.userpassword}&username=${this.username}&userage=${this.userage}`, {
+        fetch(`https://markettown.herokuapp.com/users/usercreatesuccess?useremail=${this.useremail}&userpassword=${this.userpassword}&username=${this.username}&userage=${this.userage}`, {
           mode: 'cors',
           method: 'GET'
         }).then(response => response.body).then(rb  => {
