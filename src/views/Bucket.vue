@@ -11,7 +11,6 @@
             </span>
           </h5>
           <div class="card-body">
-            {{ product._id }}
             <h5>{{ product.price }}$</h5>
             <button @click="deleteFromBucket(product.name, product._id)"  class="btn btn-danger">удалить из корзины</button>
           </div>
