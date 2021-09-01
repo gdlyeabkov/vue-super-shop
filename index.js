@@ -1,9 +1,4 @@
-﻿const passport = require('passport')
-const jwt = require('jsonwebtoken')
-var token = null
-
 const bcrypt = require('bcrypt')
-const saltRounds = 10;
 
 const mongoose = require('mongoose')
 const express = require('express')
@@ -89,7 +84,7 @@ app.get('/admin/orders', (req, res)=>{
     let query = OrderModel.find({}).select(['ownername', 'price']);
     query.exec((err, allOrders) => {
         if (err){
-            return
+            return res.json({ "status": "Error" })
         }
         let mailOfUser = req.query.useremail
         res.json(allOrders)
@@ -105,13 +100,11 @@ app.get('/admin/products/add', async (req, res)=>{
     
 
     if(Array(req.query.productname)[0] === undefined){
-        res.send(`product not found`)
-        return
+        return res.json({ "status": "product not found" })
     } else if(Array(req.query.productname)[0] !== undefined) {
         await new ProductModel({ name: req.query.productname, price: Number(req.query.productprice) }).save(function (err) {
             if(err){
-                res.send(`product not found`)
-                return
+                return res.json({ "status": "product not found" })
             } else {
                 return res.json({ "status": "OK" })
             }
@@ -121,8 +114,7 @@ app.get('/admin/products/add', async (req, res)=>{
 
 app.get('/admin/products/delete', async (req, res)=>{
     if(Array(req.query.productname)[0] === undefined){
-        res.send(`product not found`)
-        return
+        return res.json({ "status": "product not found" })
     } else if(Array(req.query.productname)[0] !== undefined) {
         await ProductModel.deleteMany({ name: req.query.productname  })
         res.redirect('/home')
@@ -247,8 +239,7 @@ app.get('/users/check', (req,res)=>{
    
     let query =  UsersModel.findOne({'email': req.query.useremail}, function(err, user){
         if (err || user == undefined || user == null){
-            return res.send(`user not found`)    
-            
+            return res.json({ "status": "user not found" })
         } else {
             
             let passwordCheck = bcrypt.compareSync(req.query.userpassword, user.password) && req.query.userpassword !== ''
@@ -270,7 +261,7 @@ app.get('/users/usercreatesuccess',async (req, res)=>{
     let query = UsersModel.find({}).select(['email']);
     query.exec(async (err, allUsers) => {
         if (err){
-            return res.send('rollback')
+            return res.json({ "status": "rollback" })
         }
         let userExists = false
         allUsers.forEach(user => {
@@ -279,20 +270,18 @@ app.get('/users/usercreatesuccess',async (req, res)=>{
             }
         });
         if(userExists){
-            return res.send('rollback')
+            return res.json({ "status": "rollback" })
         } else {
 
             let encodedPassword = "#"
-            const salt = bcrypt.genSalt(saltRounds)
             encodedPassword = bcrypt.hashSync(req.query.userpassword, saltRounds)
 
             const user = await new UsersModel({ email: req.query.useremail, password: encodedPassword, name:req.query.username, age:req.query.userage });
             user.save(function (err) {
                 if(err){
-                    return res.send('rollback')
-                } else {
-                    return res.send('created')
+                    return res.json({ "status": "rollback" })
                 }
+                return res.json({ "status": "OK" })
             })
         }
     })
